@@ -2,13 +2,69 @@
 
 import sys
 
+
+VERSION = "0.9.1"
+
+
+def show_help():
+    print "-h".ljust(3, " ") + "display this help message."
+    print "-v".ljust(3, " ") + "display the version number."
+    print "-a".ljust(3, " ") + "display information about this tool."
+    print " "
+    print "Example usage:"
+    print "  $ ./wurst saveReal"
+    print "  data structures/Table.wurst.......................saveReal( int parentKey, real value )"
+    print "  handles/Hashtable.wurst...........................hashtable.saveReal( integer parentKey, integer childKey, real value )"
+    print " "
+    exit(0)
+
+
+def show_version():
+    print "Wurst function search bot version " + VERSION
+    exit(0)
+
+
+def show_about():
+    print "Wurst function search bot is a public project on " + \
+          "https://github.com/Cokemonkey11/bot-wurst ."
+    exit(0)
+
+
+def show_unknown_arg(char):
+    print "Unrecognized argument " + char
+    exit(0)
+
+
+def parse_arg(arg):
+    if arg[0] == '-':
+        for char in arg[1:]:
+            if char == 'h':
+                show_help()
+            elif char == 'v':
+                show_version()
+            elif char == 'a':
+                show_about()
+            else:
+                show_unknown_arg(char)
+    else:
+        return arg
+
+
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print "I only accept a single argument."
+    search_args = []
+
+    if len(sys.argv) < 2:
+        show_help()
+
+    for arg in sys.argv[1:]:
+        search_args.append(parse_arg(arg))
+
+    if not len(search_args):
+        print "No search argument provided. Use `./wurst -h` for help."
         exit(0)
 
     with open("stl.txt", 'r') as f:
         lines = [line.strip() for line in f.readlines()]
         for line in lines:
-            if sys.argv[1].lower() in line.lower():
+            if " ".join(search_args).lower() in line.lower():
                 print line
