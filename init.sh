@@ -1,6 +1,7 @@
 #!
 
 # Fetch a sparse checkout of the STL.
+echo "Checking out the STL..."
 mkdir WurstScript
 cd    WurstScript
 git init
@@ -9,6 +10,14 @@ git config core.sparseCheckout true
 echo "Wurstpack/wurstscript/lib" > .git/info/sparse-checkout
 git pull origin master --depth 1
 cd ..
+echo "Done."
+echo " "
 
 # Build cache of public functions.
-grep -rnw './WurstScript/Wurstpack/wurstscript/lib/' -e "public function .*$" > stl.txt
+echo "Caching public functions..."
+python build-cache.py > stl.txt
+echo "Done."
+echo " "
+
+echo "Use \`./wurst saveReal\` to search for \`saveReal\` in public functions."
+echo " "
