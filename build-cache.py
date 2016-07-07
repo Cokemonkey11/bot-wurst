@@ -82,10 +82,10 @@ def check_visible_function(visibility_stack, shortname, line):
 
     if visibility == Visibility.PRIVATE:
         if "public function" in line:
-            print shortname.ljust(50, '.') + line.split('public function ')[-1]
+            print shortname + ": " + line.split('public function ')[-1]
     else:
         if "function" in line:
-            print shortname.ljust(50, '.') + line.split('function ')[-1]
+            print shortname + ": " + line.split('function ')[-1]
 
 
 def parse_file(root, file):

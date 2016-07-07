@@ -13,8 +13,8 @@ def show_help():
     print " "
     print "Example usage:"
     print "  $ ./wurst saveReal"
-    print "  data structures/Table.wurst.......................saveReal( int parentKey, real value )"
-    print "  handles/Hashtable.wurst...........................hashtable.saveReal( integer parentKey, integer childKey, real value )"
+    print "  data structures/Table.wurst: saveReal( int parentKey, real value )"
+    print "  handles/Hashtable.wurst: hashtable.saveReal( integer parentKey, integer childKey, real value )"
     print " "
     exit(0)
 
