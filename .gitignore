@@ -1,2 +1,4 @@
 stl.txt
 WurstScript/
+*.log
+*.pyc

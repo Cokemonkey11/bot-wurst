@@ -10,3 +10,5 @@ build:
 clean:
 	rm -rf WustScript
 	rm -rf stl.txt
+	rm -rf *.log
+
