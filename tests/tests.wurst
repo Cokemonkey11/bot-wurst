@@ -19,3 +19,24 @@ public class IsPublic
 public function mike()
 
 @compietime function bree()
+
+/* public function carina() */
+
+/** hello world */
+public function calvin()
+
+/**
+    Longer doc which contains some context about the public function that will
+    be defined below, called david. But also a reference to the one that should
+    not be called: function carina(). */
+public function david()
+
+public enum Nonsense
+    NOT_SENSE
+    NO_SENSE
+    SENSELESS // The white-space below is intentional.
+    
+        
+public function eric()
+
+// public function danika()

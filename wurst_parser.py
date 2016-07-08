@@ -63,6 +63,10 @@ class WurstParser(object):
         if re.match(r'\s*\/\/', line):
             return True
 
+                    # /* ... */
+        if re.match(r'\s*\/\*[^\n]*\*\/\s*$', line):
+            return True
+
         return False
 
 
@@ -112,9 +116,11 @@ class WurstParser(object):
                 logging.debug("\n\ntesting " + line)
                 # Check for no-op.
                 if self.is_comment(line):
+                    logging.debug("it was a comment")
                     continue
 
                 if self.is_in_comment(in_comment, line):
+                    logging.debug("it's in a comment")
                     in_comment = True
                     continue
                 else:
