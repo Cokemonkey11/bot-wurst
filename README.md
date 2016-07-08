@@ -17,5 +17,13 @@ Tests
 =====
 
 ```
-python test.py
+make test
+```
+
+Clean Build
+===========
+
+```
+make clean
+make
 ```
