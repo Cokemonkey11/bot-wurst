@@ -12,3 +12,6 @@ clean:
 	rm -rf stl.txt
 	rm -rf *.log
 
+.PHONY: test
+test:
+	python test.py
