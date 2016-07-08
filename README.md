@@ -2,8 +2,7 @@ Installation
 ============
 
 ```
-pip install invoke
-invoke build
+make
 ```
 
 Usage

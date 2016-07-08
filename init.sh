@@ -1,4 +1,4 @@
-#!
+#!/bin/bash
 
 # Fetch a sparse checkout of the STL.
 echo "Checking out the STL..."
