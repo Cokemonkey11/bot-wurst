@@ -1,11 +1,15 @@
+Installation
+============
+
+```
+pip install invoke
+invoke build
+```
+
 Usage
 =====
 
 ```
-git clone git@github.com:Cokemonkey11/bot-wurst.git
-cd bot-wurst
-
-./init.sh
+# Search for functions with "ability" in the name.
 ./wurst ability
 ```
-
