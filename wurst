@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
-import sys
+import sys, re
+
+
+class __ReadState:
+    def __init__(self):
+        self.skip_objediting = True
 
 
 VERSION = "0.9.3"
@@ -10,10 +15,11 @@ def show_help():
     print "-h".ljust(3, " ") + "display this help message."
     print "-v".ljust(3, " ") + "display the version number."
     print "-a".ljust(3, " ") + "display information about this tool."
+    print "-o".ljust(3, " ") + "include methods from objediting/ and objeditingpresets/"
     print " "
     print "Example usage:"
     print "  $ ./wurst saveReal"
-    print "  data structures/Table.wurst: saveReal( int parentKey, real value )"
+    print "  data structures/Table.wurst: Table.saveReal( int parentKey, real value )"
     print "  handles/Hashtable.wurst: hashtable.saveReal( integer parentKey, integer childKey, real value )"
     print " "
     exit(0)
@@ -35,7 +41,11 @@ def show_unknown_arg(char):
     exit(0)
 
 
-def parse_arg(arg):
+def include_object_editing_methods(read_state):
+    read_state.skip_objediting = False
+
+
+def parse_arg(arg, read_state):
     if arg[0] == '-':
         for char in arg[1:]:
             if char == 'h':
@@ -44,10 +54,14 @@ def parse_arg(arg):
                 show_version()
             elif char == 'a':
                 show_about()
+            elif char == 'o':
+                include_object_editing_methods(read_state)
             else:
                 show_unknown_arg(char)
     else:
         return arg
+
+    return None
 
 
 if __name__ == "__main__":
@@ -56,8 +70,12 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         show_help()
 
+    read_state = __ReadState()
+
     for arg in sys.argv[1:]:
-        search_args.append(parse_arg(arg))
+        arg_result = parse_arg(arg, read_state)
+        if arg_result:
+            search_args.append(arg_result)
 
     if not len(search_args):
         print "No search argument provided. Use `./wurst -h` for help."
@@ -67,4 +85,7 @@ if __name__ == "__main__":
         lines = [line.strip() for line in f.readlines()]
         for line in lines:
             if " ".join(search_args).lower() in line.lower():
+                if read_state.skip_objediting and re.match(r'objediting', line):
+                    continue
+
                 print line
