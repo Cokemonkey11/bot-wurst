@@ -124,12 +124,14 @@ class WurstParser(object):
 
         if visibility == self.__Visibility.PUBLIC:
             if "function" in line:
-                emit = shortname + ": " + class_name + line.split('function ')[-1]
+                func_name = re.search(r'function +(.*)$', line).groups()[-1]
+                emit = shortname + ": " + class_name + func_name
                 logging.debug("emitting " + emit)
                 return emit
         else:
             if "public function" in line:
-                emit = shortname + ": " + class_name + line.split('public function ')[-1]
+                func_name = re.search(r'public +function +(.*)$', line).groups()[-1]
+                emit = shortname + ": " + class_name + func_name
                 logging.debug("emitting " + emit)
                 return emit
 
