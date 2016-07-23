@@ -3,6 +3,8 @@
 
 import os
 
+import logging
+
 from wurst_parser import WurstParser
 
 LIB_FOLDER = "./WurstScript/Wurstpack/wurstscript/lib/"
@@ -24,5 +26,6 @@ def parse_files(root, files):
 
 # Entry point.
 if __name__ == "__main__":
+    logging.basicConfig(filename='build-cache.log', level=logging.DEBUG)
     for root, dirs, files in os.walk(LIB_FOLDER):
         parse_files(root, files)

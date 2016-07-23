@@ -4,15 +4,27 @@ import re, sys
 import logging
 
 class WurstParser(object):
+    class __VisibilityNode:
+        def __init__(self, visibility, whitespace, name):
+            self.visibility = visibility
+            self.whitespace = whitespace
+            self.name       = name
+
+        def __repr__(self):
+            return "Inner VisibilityClass with vis(" + str(self.visibility) + "), whitespace(" + str(self.whitespace) + "), name(" + self.name + ")."
+
+
+
+    class __Visibility:
+        PUBLIC, PRIVATE = range(2)
+
+
+
     def __init__(self, fullname, prefix=None):
         self.fullname  = fullname
         self.shortname = fullname
         if prefix:
             self.shortname = fullname.split(prefix)[1]
-
-
-    class Visibility:
-        PUBLIC, PRIVATE = range(2)
 
 
     def count_whitespace(self, line):
@@ -27,7 +39,7 @@ class WurstParser(object):
             return False
 
         # Line has less whitespace than expected. Pop Stack.
-        expected_whitespace = visibility_stack[-1][1]
+        expected_whitespace = visibility_stack[-1].whitespace
         found_whitespace    = self.count_whitespace(line)
 
         if found_whitespace < expected_whitespace:
@@ -72,37 +84,54 @@ class WurstParser(object):
 
     def maybe_push_stack(self, visibility_stack, line):
         logging.debug(str(len(visibility_stack)))
-        if re.search(r'\s*public class', line):
+        if re.search(r'\s*public class ', line):
+            class_name      = re.search(r'\s*public class +([^\s]+)', line).group(1)
+            if len(visibility_stack):
+                class_name = visibility_stack[-1].class_name + "." + class_name
+
             whitespace_size = self.count_whitespace(line)
-            visibility_stack.append((self.Visibility.PUBLIC, whitespace_size + 4))
+            visibility_node = self.__VisibilityNode(self.__Visibility.PUBLIC, whitespace_size + 4, class_name)
+            visibility_stack.append(visibility_node)
             return visibility_stack
 
-        if re.search(r'\s*class', line):
+        if re.search(r'\s*class ', line):
+            logging.debug("found class in " + line)
+            groups = re.search(r'\s*class +([a-zA-Z0-9_]+)', line).groups()
+            logging.debug("the groups are " + str(groups))
+            class_name      = groups[0]
+            if len(visibility_stack):
+                class_name = visibility_stack[-1].class_name + "." + class_name
+
             whitespace_size = self.count_whitespace(line)
-            visibility_stack.append((self.Visibility.PRIVATE, whitespace_size + 4))
+            visibility_node = self.__VisibilityNode(self.__Visibility.PRIVATE, whitespace_size + 4, class_name)
+            visibility_stack.append(visibility_node)
             return visibility_stack
 
         return visibility_stack
 
 
     def check_visible_function(self, visibility_stack, shortname, line):
-        visibility = None
+        visibility = self.__Visibility.PRIVATE
+        class_name = ""
 
-        if not len(visibility_stack):
-            visbility = self.Visibility.PRIVATE
-        else:
-            logging.debug("public " + str(len(visibility_stack)))
-            visibility = visibility_stack[-1][0]
+        if len(visibility_stack):
+            logging.debug("have stack level " + str(len(visibility_stack)))
+            visibility = visibility_stack[-1].visibility
+            class_name = visibility_stack[-1].name + "."
 
         logging.debug(str(len(visibility_stack)))
         logging.debug(str(visibility_stack))
 
-        if visibility == self.Visibility.PUBLIC:
+        if visibility == self.__Visibility.PUBLIC:
             if "function" in line:
-                return shortname + ": " + line.split('function ')[-1]
+                emit = shortname + ": " + class_name + line.split('function ')[-1]
+                logging.debug("emitting " + emit)
+                return emit
         else:
             if "public function" in line:
-                return shortname + ": " + line.split('public function ')[-1]
+                emit = shortname + ": " + class_name + line.split('public function ')[-1]
+                logging.debug("emitting " + emit)
+                return emit
 
     def run(self):
         functions = []
