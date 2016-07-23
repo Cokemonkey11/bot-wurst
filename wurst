@@ -8,7 +8,7 @@ class __ReadState:
         self.skip_objediting = True
 
 
-VERSION = "0.9.3"
+VERSION = "0.9.4"
 
 
 def show_help():
