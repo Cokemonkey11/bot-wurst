@@ -5,22 +5,24 @@ import sys, re
 
 class __ReadState:
     def __init__(self):
-        self.skip_objediting = True
+        self.skip_objediting   = True
+        self.include_file_path = False
 
 
-VERSION = "0.9.4"
+VERSION = "0.9.5"
 
 
 def show_help():
     print "-h".ljust(3, " ") + "display this help message."
     print "-v".ljust(3, " ") + "display the version number."
     print "-a".ljust(3, " ") + "display information about this tool."
-    print "-o".ljust(3, " ") + "include methods from objediting/ and objeditingpresets/"
+    print "-o".ljust(3, " ") + "include methods from objediting/ and objeditingpresets/ ."
+    print "-p".ljust(3, " ") + "include the file path for the methods in question."
     print " "
     print "Example usage:"
     print "  $ ./wurst saveReal"
-    print "  data structures/Table.wurst: Table.saveReal( int parentKey, real value )"
-    print "  handles/Hashtable.wurst: hashtable.saveReal( integer parentKey, integer childKey, real value )"
+    print "  Table.saveReal( int parentKey, real value )"
+    print "  hashtable.saveReal( integer parentKey, integer childKey, real value )"
     print " "
     exit(0)
 
@@ -45,6 +47,10 @@ def include_object_editing_methods(read_state):
     read_state.skip_objediting = False
 
 
+def include_file_path(read_staet):
+    read_state.include_file_path = True
+
+
 def parse_arg(arg, read_state):
     if arg[0] == '-':
         for char in arg[1:]:
@@ -56,6 +62,8 @@ def parse_arg(arg, read_state):
                 show_about()
             elif char == 'o':
                 include_object_editing_methods(read_state)
+            elif char == 'p':
+                include_file_path(read_state)
             else:
                 show_unknown_arg(char)
     else:
@@ -87,5 +95,8 @@ if __name__ == "__main__":
             if " ".join(search_args).lower() in line.lower():
                 if read_state.skip_objediting and re.match(r'objediting', line):
                     continue
+
+                if not read_state.include_file_path:
+                    line = line.split('.wurst: ')[-1]
 
                 print line
